@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szyfr</title>
+</head>
+
+<body>
+    <section>
+        <section id="result"></section>
+        <p>Wszystkie przesunięcia: </p>
+        <ul id="shifts"></ul>
+    </section>
+
+    <script type="module">
+        import { franc } from 'https://esm.sh/franc@6?bundle'
+
+        let text = `epomj ezno yudndve. nuopxuiv diozgdbzixev rkgtrv iv ivnuv xjyudziijnx.
+            vwt fjiotipjrvx rturvidz, rtngde fjy uvyvidv iv:
+            epomj.ezno.yudndve@vyzkxd.do`;
+        let polishText = ``;
+
+        for (let shift = 0; shift < 26; shift++) {
+            let result = "";
+
+            for (let letter of text) {
+                //Converting letter to code from ASCII table
+                let code = letter.charCodeAt(0);
+
+                //Shifting capital letter
+                if (code >= 65 && code <= 90) {
+                    result += String.fromCharCode(
+                        ((code - 65 + shift) % 26) + 65
+                    );
+                }
+                //Shifting lowercase letter
+                else if (code >= 97 && code <= 122) {
+                    result += String.fromCharCode(
+                        ((code - 97 + shift) % 26) + 97
+                    );
+                }
+                //If letter is not alphabet, don't change it
+                else
+                    result += letter;
+            };
+
+            if (franc(result) == "pol") {
+                polishText = result;
+            }
+            //Showing all of the shifts on screen
+            let li = document.createElement("li")
+            li.innerHTML = `<pre>Przesunięcie o ${shift + 0}: ${result}</pre>`;
+            document.getElementById("shifts").appendChild(li);
+        }
+
+        let emailRegExp = /\s[\w\.]{3,}@\w{2,}\.\w{2,}/i;
+        //Searching for email in this string
+        let email = polishText.match(emailRegExp)[0];
+
+        //Showing results on screen
+        let res = document.createElement("p");
+        res.innerText = `Odkodowany tekst po polsku:\n${polishText}\n\nemail: ${email}`;
+        document.getElementById("result").appendChild(res);
+
+    </script>
+</body>
+
+</html>
